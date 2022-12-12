@@ -28,11 +28,20 @@ class Product
 
     public function getPrice()
     {
-        return (float)number_format($this->price, 2, '.');
+        return number_format($this->price, 2, '.') . "&euro;";
     }
 
     public function getRating()
     {
         return round($this->rating, 0);
+    }
+
+    public function getCategory()
+    {
+        return $this->category;
+    }
+    public function getType()
+    {
+        return $this->type;
     }
 }
