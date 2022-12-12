@@ -10,7 +10,8 @@ Il cliente potrà sia comprare i prodotti come ospite, senza doversi registrarsi
 Il cliente effettua il pagamento dei prodotti nel carrello con la carta di credito, che non deve essere scaduta.
 */
 
-
+require __DIR__ . '/Models/Customer.php';
+require __DIR__ . '/Models/Account.php';
 require __DIR__ . '/Models/Product.php';
 require __DIR__ . '/Models/Category.php';
 require __DIR__ . '/Models/Type.php';
@@ -21,11 +22,26 @@ var_dump($new_product);
 var_dump($new_product->image); 
 var_dump($new_product->getPrice());
 var_dump($new_product->getRating()); */
+$new_user = new Customer(new Account('Guest', ''), [new Product('Cesar', 9.9943434, 'https://imgs.search.brave.com/5R7WDAYBfq-IT5OsjGtPW8y1BgRicZiyjehEcXuTxaY/rs:fit:1200:1200:1/g:ce/aHR0cHM6Ly93d3cu/c29sb2ltaWdsaW9y/aS5pdC93cC1jb250/ZW50L3VwbG9hZHMv/MjAyMC8wNC9jZXNh/ci1jaWJvLXBlci1j/YW5pLmpwZw', 4, new Category('Dogs'), new Type('Food'))]);
 $logged = false;
 if (!empty($_GET)) {
     $password = $_GET['password'];
     $username = $_GET['userName'];
     $logged = true;
+    $new_user->getAccount()->setDiscount();
+    if (isset($password) && isset($username)) {
+        $new_user->getAccount()->setUsername($username);
+        $new_user->getAccount()->setPassword($password);
+    }
+}
+
+function getTotal($array, $discount)
+{
+    $sum = 0;
+    foreach ($array as $product) {
+        $sum += $product->getPrice() - $product->getPrice() * $discount / 100;
+    }
+    return $sum;
 }
 
 ?>
@@ -45,8 +61,7 @@ if (!empty($_GET)) {
     <link rel="stylesheet" href="./assets/css/style.css">
 </head>
 <style>
-    .login,
-    .account {
+    .login {
         display: flex;
         align-items: center;
     }
@@ -70,19 +85,21 @@ if (!empty($_GET)) {
         <div class="container-fluid">
             <div class="row row-cols-2">
                 <div class="col account">
-                    Ur logged as <?= isset($username) && !empty($username) ? $username : 'Guest' ?>
+                    Ur logged as <?= $new_user->getAccount()->getUsername() ?>
+                    <div class="total">Il totale é : <?= getTotal($new_user->getProducts(), $new_user->getAccount()->getDiscount()) ?></div>
                 </div>
+
                 <?php if (!$logged) : ?>
                     <form class="col login justify-content-end" action="index.php" method="GET">
                         <span class="mx-3">Login for 20% discount</span>
                         <div class="mb-3 mx-3">
                             <label for="userName" class="form-label">Username</label>
-                            <input type="text" class="form-control" name="userName" id="userName" aria-describedby="helpId" placeholder="">
+                            <input type="text" class="form-control" name="userName" id="userName" aria-describedby="helpId" placeholder="" required>
                             <small id="helpId" class="form-text text-muted">exampleUser</small>
                         </div>
                         <div class="mb-3 mx-3">
                             <label for="password" class="form-label">Password</label>
-                            <input type="text" class="form-control" name="password" id="password" aria-describedby="helpId" placeholder="">
+                            <input type="text" class="form-control" name="password" id="password" aria-describedby="helpId" placeholder="" required>
                             <small id="helpId" class="form-text text-muted">pass1234</small>
                         </div>
                         <button class="btn btn-primary" type="submit">Log In</button>
@@ -112,7 +129,7 @@ if (!empty($_GET)) {
                                     <?php endif ?>
                                     <?= $product->getType()->getName() ?>
                                 </div>
-                                <span class="card-text fw-bold text-success d-block"><?= $product->getPrice() ?></span>
+                                <span class="card-text fw-bold text-success d-block"><?= $product->getFormattedPrice() ?></span>
                             </div>
                         </div>
                     </div>

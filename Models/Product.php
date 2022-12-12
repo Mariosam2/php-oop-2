@@ -26,9 +26,14 @@ class Product
         return $this->image;
     }
 
-    public function getPrice()
+    public function getFormattedPrice()
     {
         return number_format($this->price, 2, '.') . "&euro;";
+    }
+
+    public function getPrice()
+    {
+        return (float)number_format($this->price, 2, '.');
     }
 
     public function getRating()
