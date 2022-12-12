@@ -21,6 +21,12 @@ var_dump($new_product);
 var_dump($new_product->image); 
 var_dump($new_product->getPrice());
 var_dump($new_product->getRating()); */
+$logged = false;
+if (!empty($_GET)) {
+    $password = $_GET['password'];
+    $username = $_GET['userName'];
+    $logged = true;
+}
 
 ?>
 
@@ -39,6 +45,12 @@ var_dump($new_product->getRating()); */
     <link rel="stylesheet" href="./assets/css/style.css">
 </head>
 <style>
+    .login,
+    .account {
+        display: flex;
+        align-items: center;
+    }
+
     .card.ms_card img {
         height: 300px;
         object-fit: cover;
@@ -54,12 +66,38 @@ var_dump($new_product->getRating()); */
 </style>
 
 <body>
-    <header id="site_header"></header>
+    <header id="site_header" class="px-5 pt-3">
+        <div class="container-fluid">
+            <div class="row row-cols-2">
+                <div class="col account">
+                    Ur logged as <?= isset($username) && !empty($username) ? $username : 'Guest' ?>
+                </div>
+                <?php if (!$logged) : ?>
+                    <form class="col login justify-content-end" action="index.php" method="GET">
+                        <span class="mx-3">Login for 20% discount</span>
+                        <div class="mb-3 mx-3">
+                            <label for="userName" class="form-label">Username</label>
+                            <input type="text" class="form-control" name="userName" id="userName" aria-describedby="helpId" placeholder="">
+                            <small id="helpId" class="form-text text-muted">exampleUser</small>
+                        </div>
+                        <div class="mb-3 mx-3">
+                            <label for="password" class="form-label">Password</label>
+                            <input type="text" class="form-control" name="password" id="password" aria-describedby="helpId" placeholder="">
+                            <small id="helpId" class="form-text text-muted">pass1234</small>
+                        </div>
+                        <button class="btn btn-primary" type="submit">Log In</button>
+                    </form>
+                <?php endif ?>
+            </div>
+
+        </div>
+
+    </header>
     <!-- /#site_header -->
     <main id="site_main">
         <div class="container py-5">
             <h1 class="text-center pb-3">Our Products</h1>
-            <div class="row row-cols-3 gy-4">
+            <div class="row row-cols-1 row-cols-lg-3 gy-4">
                 <?php foreach ($products as $product) : ?>
                     <div class="col">
                         <div class="card ms_card">
@@ -82,9 +120,6 @@ var_dump($new_product->getRating()); */
             </div>
         </div>
     </main>
-    <!-- /#site_main -->
-    <footer id="site_footer"></footer>
-    <!-- /#site_footer -->
     <!--Bootstrap-->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-u1OknCvxWvY5kfmNBILK2hRnQC3Pr17a+RTT6rIHI7NnikvbZlHgTPOOmMi466C8" crossorigin="anonymous"></script>
 </body>
