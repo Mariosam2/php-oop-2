@@ -22,16 +22,16 @@ var_dump($new_product);
 var_dump($new_product->image); 
 var_dump($new_product->getPrice());
 var_dump($new_product->getRating()); */
-$new_user = new Customer(new Account('Guest', ''), [new Product('Cesar', 9.9943434, 'https://imgs.search.brave.com/5R7WDAYBfq-IT5OsjGtPW8y1BgRicZiyjehEcXuTxaY/rs:fit:1200:1200:1/g:ce/aHR0cHM6Ly93d3cu/c29sb2ltaWdsaW9y/aS5pdC93cC1jb250/ZW50L3VwbG9hZHMv/MjAyMC8wNC9jZXNh/ci1jaWJvLXBlci1j/YW5pLmpwZw', 4, new Category('Dogs'), new Type('Food'))]);
+$new_customer = new Customer(new Account('Guest', ''), [new Product('Cesar', 9.9943434, 'https://imgs.search.brave.com/5R7WDAYBfq-IT5OsjGtPW8y1BgRicZiyjehEcXuTxaY/rs:fit:1200:1200:1/g:ce/aHR0cHM6Ly93d3cu/c29sb2ltaWdsaW9y/aS5pdC93cC1jb250/ZW50L3VwbG9hZHMv/MjAyMC8wNC9jZXNh/ci1jaWJvLXBlci1j/YW5pLmpwZw', 4, new Category('Dogs'), new Type('Food'))]);
 $logged = false;
 if (!empty($_GET)) {
     $password = $_GET['password'];
     $username = $_GET['userName'];
     $logged = true;
-    $new_user->getAccount()->setDiscount();
+    $new_customer->getAccount()->setDiscount();
     if (isset($password) && isset($username)) {
-        $new_user->getAccount()->setUsername($username);
-        $new_user->getAccount()->setPassword($password);
+        $new_customer->getAccount()->setUsername($username);
+        $new_customer->getAccount()->setPassword($password);
     }
 }
 
@@ -85,8 +85,8 @@ function getTotal($array, $discount)
         <div class="container-fluid">
             <div class="row row-cols-2">
                 <div class="col account">
-                    Ur logged as <?= $new_user->getAccount()->getUsername() ?>
-                    <div class="total">Il totale é : <?= getTotal($new_user->getProducts(), $new_user->getAccount()->getDiscount()) ?></div>
+                    Ur logged as <?= $new_customer->getAccount()->getUsername() ?>
+                    <div class="total">Il totale é : <?= getTotal($new_customer->getProducts(), $new_customer->getAccount()->getDiscount()) ?></div>
                 </div>
 
                 <?php if (!$logged) : ?>
