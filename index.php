@@ -27,11 +27,16 @@ $logged = false;
 if (!empty($_GET)) {
     $password = $_GET['password'];
     $username = $_GET['userName'];
-    $logged = true;
-    $new_customer->getAccount()->setDiscount();
-    if (isset($password) && isset($username)) {
-        $new_customer->getAccount()->setUsername($username);
-        $new_customer->getAccount()->setPassword($password);
+    try {
+        isAccountValid($username, $password);
+        $logged = true;
+        $new_customer->getAccount()->setDiscount();
+        if (isset($password) && isset($username)) {
+            $new_customer->getAccount()->setUsername($username);
+            $new_customer->getAccount()->setPassword($password);
+        }
+    } catch (Exception $e) {
+        echo $e->getMessage();
     }
 }
 
@@ -42,6 +47,13 @@ function getTotal($array, $discount)
         $sum += $product->getPrice() - $product->getPrice() * $discount / 100;
     }
     return $sum;
+}
+
+function isAccountValid($username, $password)
+{
+    if (empty($username) || empty($password)) {
+        throw new Exception('Invalid Account');
+    }
 }
 
 ?>
@@ -94,12 +106,12 @@ function getTotal($array, $discount)
                         <span class="mx-3">Login for 20% discount</span>
                         <div class="mb-3 mx-3">
                             <label for="userName" class="form-label">Username</label>
-                            <input type="text" class="form-control" name="userName" id="userName" aria-describedby="helpId" placeholder="" required>
+                            <input type="text" class="form-control" name="userName" id="userName" aria-describedby="helpId" placeholder="">
                             <small id="helpId" class="form-text text-muted">exampleUser</small>
                         </div>
                         <div class="mb-3 mx-3">
                             <label for="password" class="form-label">Password</label>
-                            <input type="text" class="form-control" name="password" id="password" aria-describedby="helpId" placeholder="" required>
+                            <input type="text" class="form-control" name="password" id="password" aria-describedby="helpId" placeholder="">
                             <small id="helpId" class="form-text text-muted">pass1234</small>
                         </div>
                         <button class="btn btn-primary" type="submit">Log In</button>
